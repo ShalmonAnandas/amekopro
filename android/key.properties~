@@ -1,0 +1,4 @@
+storePassword=Anandas!#66
+keyPassword=Anandas!#66
+keyAlias=upload
+storeFile=app/upload-keystore.jks

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "440838970380",
+    "project_id": "ameko-pro",
+    "storage_bucket": "ameko-pro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440838970380:android:aa455597c7aea13dda6229",
+        "android_client_info": {
+          "package_name": "com.shalmon.amekopro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440838970380-3tm8igc7kfpl6f5ga3j6rcdssrrpa20r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shalmon.amekopro",
+            "certificate_hash": "90ec5b2b76203d4fd6acd2625dc5f96ff39e9aa3"
+          }
+        },
+        {
+          "client_id": "440838970380-jtn204nqi3ies35kjjfqonug9klcohu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD786fJkcf3pOVZWR3Otw4Dl5zvLn4gl5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440838970380-jtn204nqi3ies35kjjfqonug9klcohu3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "440838970380-9iq4nvi0skik2pvc74p11o0q8570qf13.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.shalmon.amekopro"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
