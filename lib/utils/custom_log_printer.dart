@@ -1,8 +1,7 @@
 import 'dart:developer';
 
-CustomLogPrinter CLP = CustomLogPrinter();
-
 class CustomLogPrinter {
+  static CustomLogPrinter instance = CustomLogPrinter();
   void printLog(String val) {
     try {
       log(val);

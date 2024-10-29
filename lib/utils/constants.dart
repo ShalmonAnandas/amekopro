@@ -1,6 +1,12 @@
-Constants constants = Constants();
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Constants {
-  bool isPrajaktaEnabled = true;
+  static Constants instance = Constants();
+
+  /// Prajakta Mode
+  bool prajaktaMode = true;
+
+  /// User profile data
   String? firebaseMessagingToken;
+  User? userProfile;
 }

@@ -1,5 +1,6 @@
 import 'package:amekopro/features/anime/homepage/home_ui.dart';
 import 'package:amekopro/firebase_options.dart';
+import 'package:amekopro/utils/authentication.dart';
 import 'package:amekopro/utils/constants.dart';
 import 'package:amekopro/utils/hex_color.dart';
 import 'package:amekopro/utils/notifications.dart';
@@ -14,7 +15,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Notifications().initNotifications();
+  Notifications.instance.initNotifications();
+  await Authentication.instance.initUserProfile();
   runApp(const MyApp());
 }
 
