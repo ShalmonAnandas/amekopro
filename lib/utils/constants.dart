@@ -9,4 +9,5 @@ class Constants {
   /// User profile data
   String? firebaseMessagingToken;
   User? userProfile;
+  String? displayName;
 }

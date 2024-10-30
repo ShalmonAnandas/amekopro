@@ -1,6 +1,7 @@
 import 'package:amekopro/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication {
   static Authentication instance = Authentication();
@@ -31,6 +32,9 @@ class Authentication {
     await FirebaseAuth.instance.currentUser?.linkWithCredential(credential);
 
     Constants.instance.userProfile = await getUserProfile();
+    setDisplayName(
+        displayName:
+            Constants.instance.userProfile?.providerData.first.displayName);
   }
 
   /// Sign in to Firebase anonymously.
@@ -77,5 +81,20 @@ class Authentication {
     if (Constants.instance.userProfile == null) {
       anonymousSignIn();
     }
+  }
+
+  Future<void> setDisplayName({String? displayName}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (displayName == null) {
+      Constants.instance.displayName = prefs.getString("user_display_name");
+    } else {
+      Constants.instance.displayName = displayName;
+      prefs.setString("user_display_name", displayName);
+    }
+  }
+
+  String? getDisplayName() {
+    return Constants.instance.displayName;
   }
 }

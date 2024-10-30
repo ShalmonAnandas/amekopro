@@ -10,7 +10,7 @@ class CustomLogPrinter {
     }
   }
 
-  printDebugLog(String val, dynamic er, dynamic st) {
+  printDebugLog(String val, Object er, StackTrace st) {
     try {
       log(val, name: val, error: er, stackTrace: st);
     } catch (e) {

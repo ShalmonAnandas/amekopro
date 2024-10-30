@@ -1,10 +1,8 @@
 import 'dart:ui';
 
 import 'package:amekopro/utils/hex_color.dart';
-import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class GlassyButton extends StatefulWidget {
