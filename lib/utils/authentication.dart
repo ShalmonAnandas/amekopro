@@ -4,22 +4,35 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication {
+  final GoogleSignIn _googleSignInClient;
+  final FirebaseAuth auth;
+
+  Authentication({
+    GoogleSignIn? googleSignIn,
+    FirebaseAuth? auth,
+  })  : this._googleSignInClient = googleSignIn ?? GoogleSignIn(),
+        this.auth = auth ?? FirebaseAuth.instance;
+
   static Authentication instance = Authentication();
 
-  /// Trigger the authentication flow.
+  /// Signs in or links a Google account with Firebase.
   ///
-  /// If the user is not signed in with Google yet, this will open the Google
-  /// sign-in flow. If the user is signed in with Google already, this will
-  /// return their account information.
+  /// This method handles both new Google sign-ins and linking Google credentials
+  /// to existing Firebase accounts:
+  /// - For new users, it creates a Firebase account with Google credentials
+  /// - For existing users, it links the Google credentials to their account
   ///
-  /// After the authentication flow is triggered, it will obtain the auth
-  /// details from the request and create a new credential.
+  /// After signing in, it will:
+  /// 1. Update [Constants.instance.userProfile] with the new user profile
+  /// 2. Set the display name from the Google account info
   ///
-  /// Finally, it will link the Google account with the current user using
-  /// [FirebaseAuth.linkWithCredential] and update
-  /// [Constants.instance.userProfile] with the new user profile.
-  Future<void> googleSignIn() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  /// Returns `true` when sign in is successful.
+  ///
+  /// See also:
+  /// - [anonymousSignIn] for anonymous authentication
+  /// - [getUserProfile] to get the current user profile
+  Future<bool> googleSignIn() async {
+    final GoogleSignInAccount? googleUser = await _googleSignInClient.signIn();
 
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
@@ -29,12 +42,19 @@ class Authentication {
       idToken: googleAuth?.idToken,
     );
 
-    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential);
+    final user = auth.currentUser;
+
+    if (user == null) {
+      await auth.signInWithCredential(credential);
+    } else {
+      await user.linkWithCredential(credential);
+    }
 
     Constants.instance.userProfile = await getUserProfile();
     setDisplayName(
         displayName:
             Constants.instance.userProfile?.providerData.first.displayName);
+    return true;
   }
 
   /// Sign in to Firebase anonymously.
@@ -44,10 +64,11 @@ class Authentication {
   ///
   /// After signing in, it will update [Constants.instance.userProfile] with the
   /// new user profile.
-  Future<void> anonymousSignIn() async {
-    await FirebaseAuth.instance.signInAnonymously();
-
+  Future<bool> anonymousSignIn({String? displayName}) async {
+    await auth.signInAnonymously();
+    setDisplayName(displayName: displayName);
     Constants.instance.userProfile = await getUserProfile();
+    return true;
   }
 
   /// Gets the current user profile from Firebase.
@@ -62,27 +83,21 @@ class Authentication {
   /// - [Constants.instance.userProfile]
   /// - [anonymousSignIn]
   Future<User?> getUserProfile() async {
-    return FirebaseAuth.instance.currentUser;
+    return auth.currentUser;
   }
 
-  /// Initializes the user profile.
+  /// Sets or retrieves the display name for the current user.
   ///
-  /// If the user is not signed in, it will sign in anonymously and update
-  /// [Constants.instance.userProfile] with the new user profile.
+  /// If [displayName] is provided, it will:
+  /// 1. Store the name in [Constants.instance.displayName]
+  /// 2. Save it to SharedPreferences under "user_display_name" key
   ///
-  /// This is used to initialize [Constants.instance.userProfile] when the app
-  /// starts.
+  /// If [displayName] is null, it will:
+  /// - Retrieve the previously stored name from SharedPreferences and set it to
+  ///   [Constants.instance.displayName]
   ///
-  /// See also:
-  /// - [Constants.instance.userProfile]
-  /// - [anonymousSignIn]
-  Future<void> initUserProfile() async {
-    Constants.instance.userProfile = await getUserProfile();
-    if (Constants.instance.userProfile == null) {
-      anonymousSignIn();
-    }
-  }
-
+  /// This method ensures display name persistence across app restarts by using
+  /// SharedPreferences storage.
   Future<void> setDisplayName({String? displayName}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -94,7 +109,21 @@ class Authentication {
     }
   }
 
-  String? getDisplayName() {
-    return Constants.instance.displayName;
+  /// Retrieves the display name for the current user.
+  ///
+  /// First checks [Constants.instance.displayName] for the cached display name.
+  /// If not found there, attempts to retrieve it from SharedPreferences using
+  /// the "user_display_name" key.
+  ///
+  /// Returns:
+  /// - The display name if found in either location
+  /// - null if no display name has been set
+  ///
+  /// See also:
+  /// - [setDisplayName] for setting/storing the display name
+  Future<String?> getDisplayName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return Constants.instance.displayName ??
+        prefs.getString("user_display_name");
   }
 }

@@ -1,6 +1,8 @@
-import 'package:amekopro/features/profile/profile_ui.dart';
+import 'package:amekopro/widgets/bottom_navigation_bar.dart';
+import 'package:amekopro/features/login/login_ui.dart';
 import 'package:amekopro/firebase_options.dart';
 import 'package:amekopro/utils/authentication.dart';
+import 'package:amekopro/utils/constants.dart';
 import 'package:amekopro/utils/notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Notifications.instance.initNotifications();
-  await Authentication.instance.initUserProfile();
+  Constants.instance.userProfile =
+      await Authentication.instance.getUserProfile();
+  Constants.instance.displayName =
+      await Authentication.instance.getDisplayName();
   runApp(const MyApp());
 }
 
@@ -26,7 +31,9 @@ class MyApp extends StatelessWidget {
       title: 'Ameko Pro',
       themeMode: ThemeMode.dark,
       theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
-      home: const MessengerUi(),
+      home: Constants.instance.userProfile == null
+          ? const LoginUi()
+          : const AppHomeUi(),
     );
   }
 }

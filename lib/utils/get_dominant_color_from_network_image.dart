@@ -3,6 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 
+/// Calculates the dominant/average color of an image from a network URL.
+///
+/// Takes a [url] parameter pointing to an image file and returns a [Color]
+/// representing the average color of all pixels in the image.
+///
+/// The function:
+/// 1. Downloads the image from the provided URL
+/// 2. Decodes the image bytes into a manipulatable format
+/// 3. Resizes the image to 100px width for faster processing
+/// 4. Calculates the average RGB values across all pixels
+/// 5. Returns a Color object with the average RGB values
+///
+/// Returns [Colors.transparent] if any errors occur during the process.
+///
+/// Example usage:
+/// ```dart
+/// final dominantColor = await getDominantColorFromNetworkImage(
+///   'https://example.com/image.jpg'
+/// );
+/// ```
+///
+/// Throws:
+/// - Exception if the image cannot be fetched from the URL
+/// - Exception if the image bytes cannot be decoded
 Future<Color> getDominantColorFromNetworkImage(String url) async {
   try {
     final response = await http.get(Uri.parse(url));
@@ -39,7 +63,7 @@ Future<Color> getDominantColorFromNetworkImage(String url) async {
         throw Exception("Image is null");
       }
     } else {
-      throw Exception("Couldnt Fetch Image");
+      throw Exception("Couldnt fetch image");
     }
   } catch (e, s) {
     CustomLogPrinter.instance.printDebugLog("DominantColorError", e, s);

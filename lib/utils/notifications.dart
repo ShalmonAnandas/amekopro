@@ -3,6 +3,30 @@ import 'package:amekopro/utils/custom_log_printer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+/// A utility class for handling Firebase Cloud Messaging (FCM) notifications.
+///
+/// This class provides functionality to:
+/// - Initialize Firebase Messaging
+/// - Set up notification permissions
+/// - Create notification channels
+/// - Handle foreground notifications
+/// - Display local notifications
+///
+/// The class follows a singleton pattern with a static [instance] for global access.
+///
+/// Example usage:
+/// ```dart
+/// void main() async {
+///   // Initialize notifications during app startup
+///   await Notifications.instance.initNotifications();
+/// }
+/// ```
+///
+/// Key features:
+/// - Manages FCM token storage in [Constants.instance.firebaseMessagingToken]
+/// - Creates high importance notification channel for Android
+/// - Handles both FCM remote messages and local notifications
+/// - Provides error logging through [CustomLogPrinter]
 class Notifications {
   static Notifications instance = Notifications();
 
@@ -79,6 +103,18 @@ class Notifications {
     );
   }
 
+  /// Handles incoming FCM messages and displays local notifications.
+  ///
+  /// Takes three required parameters:
+  /// - [message] - The FCM remote message to handle
+  /// - [flutterLocalNotificationsPlugin] - Plugin instance for showing notifications
+  /// - [channel] - The Android notification channel to use
+  ///
+  /// If the message contains notification data:
+  /// - Prints message data if present
+  /// - Otherwise displays a local notification with the message content
+  ///
+  /// Any errors during notification handling are logged via [CustomLogPrinter].
   void notificationListener(
       {required RemoteMessage message,
       required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
