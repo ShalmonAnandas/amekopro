@@ -1,8 +1,13 @@
+import 'package:amekopro/features/chat/chat_controller.dart';
+import 'package:amekopro/features/chat/chat_ui.dart';
+import 'package:amekopro/features/chat/create_new_chat.dart';
 import 'package:amekopro/features/profile/profile_ui.dart';
 import 'package:amekopro/utils/hex_color.dart';
 import 'package:amekopro/widgets/common_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:get/get.dart';
 
 /// The main home screen widget for the app that provides navigation between different sections.
 ///
@@ -78,6 +83,9 @@ class _AppHomeUiState extends State<AppHomeUi> {
 
   @override
   Widget build(BuildContext context) {
+    /// Controller initialization
+    Get.put(ChatController());
+
     return Scaffold(
       bottomNavigationBar: Container(
         height: 60,
@@ -119,7 +127,7 @@ class _AppHomeUiState extends State<AppHomeUi> {
           _scrollToSelectedItem(index);
         },
         children: const [
-          Center(child: AmekoText(text: "Home")),
+          CreateNewChat(),
           Center(child: AmekoText(text: "Anime")),
           Center(child: AmekoText(text: "KDrama")),
           Center(child: AmekoText(text: "Books")),
